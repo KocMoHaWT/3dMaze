@@ -28,60 +28,19 @@ import "@babylonjs/core/Materials/standardMaterial"
 
 // Get the canvas element from the DOM.
 const canvas = document.getElementById("renderCanvas");
-//
-// // Associate a Babylon Engine to it.
 const engine = new Engine(canvas);
-//
-// // Create our first scene.
-// var scene = new Scene(engine);
-//
-// // This creates and positions a free camera (non-mesh)
-// var camera = new FreeCamera("camera1", new Vector3(0, 5, -10), scene);
-//
-//
-// // This targets the camera to scene origin
-// camera.setTarget(Vector3.Zero());
-//
-// // This attaches the camera to the canvas
-// camera.attachControl(canvas, true);
-//
-// // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
-// var light = new HemisphericLight("light1", new Vector3(0, 1, 0), scene);
-//
-// // Default intensity is 1. Let's dim the light a small amount
-// light.intensity = 0.7;
-//
-// // Crea var material = new GridMaterial("grid", scene);te a grid material
-// var material = new GridMaterial("grid", scene);
-//
-// // Our built-in 'sphere' shape. Params: name, subdivs, size, scene
-// var sphere = Mesh.CreateSphere("sphere1", 16, 2, scene);
-//
-// // Move the sphere upward 1/2 its height
-// sphere.position.y = 2;
-//
-// // Affect a material
-// sphere.material = material;
-//
-// // Our built-in 'ground' shape. Params: name, width, depth, subdivs, scene
-// var ground = Mesh.CreateGround("ground1", 6, 6, 2, scene).material = material;
-//
-// // Affect a material
-// ground.material = material;
-var createScene = function () {
-    // }
 
-    var scene = new Scene(engine);
-    var material = new GridMaterial("grid", scene);
-  //   var camera = new FreeCamera("Camera", Vector3.Zero(), scene);
-	// camera.attachControl(canvas, true);
-    var camera = new FreeCamera("camera1", new Vector3(0, 5, -100), scene);
+const createScene = function () {
+
+    const scene = new Scene(engine);
+    const material = new GridMaterial("grid", scene);
+
+    const camera = new FreeCamera("camera", new Vector3(0, 5, -100), scene);
     camera.setTarget(Vector3.Zero());
+    camera.attachControl(canvas, false);
+    const light = new HemisphericLight("light1", new Vector3(0, 1, 0), scene);
 
-	// var light = new HemisphericLight("hemi", new Vector3(0, 50, 0), scene);
-    var light = new HemisphericLight("light1", new Vector3(0, 1, 0), scene);
-// Array of paths to construct extrusion
-	var myShape = [
+	const myShape = [
 		 	new Vector3(0, 5, 0),
 			new Vector3(1, 1, 0),
 			new Vector3(5, 0, 0),
@@ -107,7 +66,7 @@ var createScene = function () {
                 ])
             ])
         ])
-    }
+    };
 
 
     
@@ -118,7 +77,7 @@ var createScene = function () {
 
     const createSnag = (startPoint) => {
         return [startPoint];
-    }
+    };
     
     // const closeSnag = (snag, arrayOfSnags) => {
     //     arrayOfSnags.push(snag);
@@ -141,8 +100,6 @@ var createScene = function () {
     };
 
     const closeSnagIfNeeded = (snag, item, arrayOfSnags) => {
-        // console.log('!item.children', !item.children);
-        // console.log('!item.children.length', !item.children.length)
         if (!item.children || !item.children.length) {
         arrayOfSnags.push(snag);
          return [ null, arrayOfSnags ];
@@ -158,11 +115,10 @@ var createScene = function () {
         [snag, arrayOfSnags] = closeSnagIfNeeded(snag, item, arrayOfSnags);
     }
 
-    // ('array of snags: ', arrayOfSnags);
     const scale = 10;
     const snagToVectorArray = (snag) => {
         return snag.map(([x, y]) => new Vector3(x * scale, y * scale, 0))
-    }
+    };
 
     const buildMesh = (vectorArray) => MeshBuilder.ExtrudeShape("star", {shape: myShape, path: vectorArray, sideOrientation: Mesh.DOUBLESIDE, updatable: true}, scene);
     const arrayOfSnagsVectors = arrayOfSnags
@@ -172,16 +128,14 @@ var createScene = function () {
         buildMesh.material = material;
     });
 
-    var ground = Mesh.CreateGround("ground1", 6, 6, 2, scene);
+    const ground = Mesh.CreateGround("ground1", 6, 6, 2, scene);
 
     ground.material = material;
 
 	return scene;
 };
 
-var scene = createScene();
-console.log(scene);
-// Render every frame
+const scene = createScene();
 engine.runRenderLoop(() => {
     scene.render();
     
