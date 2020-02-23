@@ -45,12 +45,23 @@ const createScene = function () {
     new Vector3(1, 1, 0),
     new Vector3(5, 0, 0),
     new Vector3(1, -1, 0),
-    new Vector3(0, -5, 0),
-    new Vector3(-1, -1, 0),
-    new Vector3(-5, 0, 0),
-    new Vector3(-1, 1, 0)
+    // new Vector3(0, -5, 0),
+    // new Vector3(-1, -1, 0),
+    // new Vector3(-5, 0, 0),
+    // new Vector3(-1, 1, 0)
   ];
-
+  var radius = 5;
+  var tes = 120;
+  var pi2 = Math.PI * 2;
+  var step = pi2 / tes;
+  var path = [];
+  for (var i = 0; i < pi2; i += step ) {
+    var x = radius * Math.sin(i);
+    var z = 0;
+    var y = radius * Math.cos(i);
+    path.push( new Vector3(x, y, z) );
+  }
+  path.push(path[0]);
 
   myShape.push(myShape[0]);
   const item = (x, y, c = []) => ({ x, y, children: c })
@@ -241,12 +252,12 @@ const createScene = function () {
     [snag, arrayOfSnags] = closeSnagIfNeeded(snag, item, arrayOfSnags);
   }
 
-  const scale = 10;
+  const scale = 20;
   const snagToVectorArray = (snag) => {
     return snag.map(([x, y]) => new Vector3(x * scale, y * scale, 0))
   };
 
-  const buildMesh = (vectorArray) => MeshBuilder.ExtrudeShape("star", {shape: myShape, path: vectorArray, sideOrientation: Mesh.DOUBLESIDE, updatable: true}, scene);
+  const buildMesh = (vectorArray) => MeshBuilder.ExtrudeShape("star", {shape: path, path: vectorArray, sideOrientation: Mesh.DOUBLESIDE, updatable: true}, scene);
   const arrayOfSnagsVectors = arrayOfSnags
     .map(snagToVectorArray)
     .map((vector) => {
