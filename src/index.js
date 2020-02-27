@@ -8,8 +8,11 @@ import {
   Vector3
 } from "@babylonjs/core/Maths/math";
 import {
-  FreeCamera
+  FreeCamera,
 } from "@babylonjs/core/Cameras/freeCamera";
+import {
+  ArcRotateCamera
+} from "@babylonjs/core/Cameras/arcRotateCamera"
 import {
   HemisphericLight
 } from "@babylonjs/core/Lights/hemisphericLight";
@@ -21,7 +24,8 @@ import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import {
   GridMaterial
 } from "@babylonjs/materials/grid";
-
+import { CSG } from "@babylonjs/core";
+import { OBJExport } from "@babylonjs/serializers/OBJ";
 // Required side effects to populate the Create methods on the mesh class. Without this, the bundle would be smaller but the createXXX methods from mesh would not be accessible.
 import "@babylonjs/core/Meshes/meshBuilder";
 import "@babylonjs/core/Materials/standardMaterial"
@@ -35,7 +39,9 @@ const createScene = function () {
   const scene = new Scene(engine);
   const material = new GridMaterial("grid", scene);
 
-  const camera = new FreeCamera("camera", new Vector3(0, 5, -100), scene);
+  // const camera = new FreeCamera("camera", new Vector3(0, 5, -100), scene);
+  const  camera = new ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2, 4, Vector3.Zero(), scene);
+  camera.attachControl(canvas, true);
   camera.setTarget(Vector3.Zero());
   camera.attachControl(canvas, false);
   const light = new HemisphericLight("light1", new Vector3(0, 1, 0), scene);
@@ -257,17 +263,47 @@ const createScene = function () {
     return snag.map(([x, y]) => new Vector3(x * scale, y * scale, 0))
   };
 
-  const buildMesh = (vectorArray) => MeshBuilder.ExtrudeShape("star", {shape: path, path: vectorArray, sideOrientation: Mesh.DOUBLESIDE, updatable: true}, scene);
-  const arrayOfSnagsVectors = arrayOfSnags
-    .map(snagToVectorArray)
-    .map((vector) => {
-      buildMesh(vector);
-      buildMesh.material = material;
-    });
+  // const buildMesh = (vectorArray) => MeshBuilder.ExtrudeShape("star", {shape: path, path: vectorArray, sideOrientation: Mesh.DOUBLESIDE, updatable: true}, scene);
+  // const arrayOfSnagsVectors = arrayOfSnags
+  //   .map(snagToVectorArray)
+  //   .map((vector) => {
+  //     buildMesh(vector);
+  //     buildMesh.material = material;
+  //   });
 
-  const ground = Mesh.CreateGround("ground1", 6, 6, 2, scene);
+  // const ground = Mesh.CreateGround("ground1", 6, 6, 2, scene);
 
-  ground.material = material;
+
+  /// test code 
+
+  var box = MeshBuilder.CreateBox("box", {height: 1, width: 1, depth: 1}, scene);
+  var sphere = MeshBuilder.CreateSphere("sphere", {diameterX: .5, diameterY: .5, diameterZ: .5}, scene);
+  var myPlane =  MeshBuilder.CreateBox("box", {height: 1, width: 3, depth: 3}, scene);
+  myPlane.setPositionWithLocalVector(new Vector3(2,2,2));
+  box.setPositionWithLocalVector(new Vector3(2,2,2));
+  sphere.setPositionWithLocalVector(new Vector3(2,2,2.5));
+  const myPlaneCSG = CSG.FromMesh(myPlane);
+  const boxCSG = CSG.FromMesh(box);
+  const sphereCSG = CSG.FromMesh(sphere);
+  const boxWithSphereResultCSG = boxCSG.union(sphereCSG);
+  const planeSubstract = myPlaneCSG.subtract(boxWithSphereResultCSG);
+  // resultCSG.toMesh("csg", material, scene);
+  const meshPlane = planeSubstract.toMesh("plane", material, scene);
+  // console.log(OBJExport)
+  // const obj = OBJExport.OBJ(meshPlane, material, 'test',true)
+  OBJExport.ObjAsync(scene, "fileName1").then((obj) => {
+    obj.downloadFiles();
+});
+  //OBJ([planeSubstract], true, material, true)
+// delete them from scene
+  box.dispose();
+  sphere.dispose();
+  myPlane.dispose();
+
+
+  
+  
+  // ground.material = material;
 
   return scene;
 };
