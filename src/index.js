@@ -1,3 +1,4 @@
+// import 'babylonjs-loaders';
 import {
   Engine
 } from "@babylonjs/core/Engines/engine";
@@ -24,12 +25,13 @@ import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import {
   GridMaterial
 } from "@babylonjs/materials/grid";
-import { CSG } from "@babylonjs/core";
+import { CSG, SceneLoader } from "@babylonjs/core";
 import { OBJExport } from "@babylonjs/serializers/OBJ";
 // Required side effects to populate the Create methods on the mesh class. Without this, the bundle would be smaller but the createXXX methods from mesh would not be accessible.
 import "@babylonjs/core/Meshes/meshBuilder";
-import "@babylonjs/core/Materials/standardMaterial"
-
+import "@babylonjs/core/Materials/standardMaterial";
+import { OBJFileLoader } from  "babylonjs-loaders";
+import { labirynth } from "./labirynth";
 // Get the canvas element from the DOM.
 const canvas = document.getElementById("renderCanvas");
 const engine = new Engine(canvas);
@@ -85,132 +87,7 @@ const createScene = function () {
     ])
   };
 
-  const secondObj = {
-    width: 20,
-    height: 20,
-    path: item(0, 1, [
-      // 1
-      item(1, 1, [
-        // 2
-        item(1,2, [
-          // 3
-          item(1,3, [
-            // 4
-            item(2,3,[
-              // 5
-              item(2,4,[
-                //6
-                item(2,5,[
-                  //7
-                  item(2,6,[
-                    //8
-                    item(2,7,[
-                      //9
-                      item(2,8,[
-                        //10
-                        item(1,8),
-                        //11
-                        item(2,9,[
-                          //12
-                          item(3,9,[
-                            ////16
-                            item(3,11)
-                          ]),
-                          //13
-                          item(2,10,[
-                            //14
-                            item(2,11,[
-                              //15
-                              item(1,11),
-                              //16
-                              item(3,11,[
-                                //17
-                                item(3,12,[
-                                  //18
-                                  item(3,13,[
-                                    //19
-                                    item(4,13,[
-                                      //20
-                                      item(5,13,[
-                                        //21
-                                        item(5,12,[
-                                          //22
-                                          item(5,11,[
-                                            //23
-                                            item(4,11,[
-                                              ////16
-                                              item(3,11)
-                                            ]),
-                                            //24
-                                            item(5,10,[
-                                              //25
-                                              item(5,9,[
-                                                //26
-                                                item(5,8,[
-                                                  //27
-                                                  item(4,8,[
-                                                    //28
-                                                    item(4,7,[
-                                                      //29
-                                                      item(4,6,[
-                                                        //30
-                                                        item(5,6),
-                                                        //31
-                                                        item(4,5,[
-                                                          //32
-                                                          item(3,5,[
-                                                            ////6
-                                                            item(2,5)
-                                                          ]),
-                                                          //33
-                                                          item(4,4,[
-                                                            //34
-                                                            item(4,3,[
-                                                              //35
-                                                              item(4,2,[
-                                                                //36
-                                                                item(4,1,[
-                                                                  //37
-                                                                  item(3,1,[
-                                                                    //38
-                                                                    item(2,1,[
-                                                                      ////
-                                                                      item(1, 1)
-                                                                    ])
-                                                                  ])
-                                                                ])
-                                                              ])
-                                                            ])
-                                                          ])
-                                                        ])
-                                                      ])
-                                                    ])
-                                                  ])
-                                                ])
-                                              ])
-                                            ])
-                                          ])
-                                        ])
-                                      ])
-                                    ])
-                                  ])
-                                ])
-                              ])
-                            ])
-                          ])
-                        ])
-                      ])
-                    ])
-                  ])
-                ])
-              ])
-            ])
-          ])
-        ])
-      ])
-    ])
-  };
-
+  const secondObj = labirynth();
 
 
   const otherPoint = (obj, parent) => ({x: obj.x, y: obj.y, parentX: parent.x, parentY: parent.y})
@@ -276,41 +153,67 @@ const createScene = function () {
 
   /// test code 
 
-  var box = MeshBuilder.CreateBox("box", {height: 1, width: 1, depth: 1}, scene);
-  var sphere = MeshBuilder.CreateSphere("sphere", {diameterX: .5, diameterY: .5, diameterZ: .5}, scene);
-  var myPlane =  MeshBuilder.CreateBox("box", {height: 1, width: 3, depth: 3}, scene);
-  myPlane.setPositionWithLocalVector(new Vector3(2,2,2));
-  box.setPositionWithLocalVector(new Vector3(2,2,2));
-  sphere.setPositionWithLocalVector(new Vector3(2,2,2.5));
-  const myPlaneCSG = CSG.FromMesh(myPlane);
-  const boxCSG = CSG.FromMesh(box);
-  const sphereCSG = CSG.FromMesh(sphere);
-  const boxWithSphereResultCSG = boxCSG.union(sphereCSG);
-  const planeSubstract = myPlaneCSG.subtract(boxWithSphereResultCSG);
+  // var box = MeshBuilder.CreateBox("box", {height: 12, width: 10, depth: 10}, scene);
+  // var sphere = MeshBuilder.CreateSphere("sphere", {diameterX: 5, diameterY: 5, diameterZ: 5}, scene);
+  // var myPlane =  MeshBuilder.CreateBox("box", {height: 10, width: 30, depth: 30}, scene);
+  // myPlane.setPositionWithLocalVector(new Vector3(2,2,2));
+  // box.setPositionWithLocalVector(new Vector3(2.5,2.5,2.5));
+  // sphere.setPositionWithLocalVector(new Vector3(8,2,2.5));
+  // const myPlaneCSG = CSG.FromMesh(myPlane);
+  // const boxCSG = CSG.FromMesh(box);
+  // const sphereCSG = CSG.FromMesh(sphere);
+  // const boxWithSphereResultCSG = boxCSG.union(sphereCSG);
+  // const planeSubstract = myPlaneCSG.subtract(boxWithSphereResultCSG);
   // resultCSG.toMesh("csg", material, scene);
-  const meshPlane = planeSubstract.toMesh("plane", material, scene);
+  // const meshPlane = planeSubstract.toMesh("plane", material, scene);
   // console.log(OBJExport)
-  // const obj = OBJExport.OBJ(meshPlane, material, 'test',true)
-  OBJExport.ObjAsync(scene, "fileName1").then((obj) => {
-    obj.downloadFiles();
-});
+//   const obj = OBJExport.OBJ([meshPlane],false, "", true)
+//   var saveBlob = (function () {
+//     var a = document.createElement("a");
+//     document.body.appendChild(a);
+//     a.style = "display: none";
+//     return function (blob, fileName) {
+//         var url = window.URL.createObjectURL(blob);
+//         a.href = url;
+//         a.download = fileName;
+//         a.click();
+//         window.URL.revokeObjectURL(url);
+//     };
+// }());
+
+
+
+// saveBlob(new Blob([obj]), 'test.obj');
+  // console.log(obj);
+  // OBJExport.ObjAsync(scene, "fileName1").then((obj) => {
+  //   obj.downloadFiles();
+  // });
+
+
   //OBJ([planeSubstract], true, material, true)
 // delete them from scene
-  box.dispose();
-  sphere.dispose();
-  myPlane.dispose();
-
-
-  
+  // box.dispose();
+  // sphere.dispose();
+  // myPlane.dispose();
   
   // ground.material = material;
+  // SceneLoader.ImportMesh("", "/", "snaggy.obj", scene, function (meshes) {
+  //   scene.createDefaultCameraOrLight(true, true, true);
+  //   scene.createDefaultEnvironment();
+  // });
+  //   SceneLoader.Append("", "snaggy.obj",scene, function (scene) {
+  const obj = new OBJFileLoader()
+  //
+  // });
 
   return scene;
 };
-
 const scene = createScene();
+
+
+
 engine.runRenderLoop(() => {
   scene.render();
-
 });
+
 
