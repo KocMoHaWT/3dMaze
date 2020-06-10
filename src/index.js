@@ -12,6 +12,7 @@ import { OBJExport } from '@babylonjs/serializers/OBJ';
 import '@babylonjs/core/Meshes/meshBuilder';
 import '@babylonjs/core/Materials/standardMaterial';
 import { OBJFileLoader } from  'babylonjs-loaders';
+import arrayOfPoints from "./labyrinth";
 
 const canvas = document.getElementById('renderCanvas');
 const engine = new Engine(canvas);
@@ -64,14 +65,13 @@ const createScene = function () {
   const light = new HemisphericLight('light1', new Vector3(0, 1, 0), scene);
 
   SceneLoader.RegisterPlugin(new OBJFileLoader())
-  SceneLoader.Append('./assets/', 'snaggy.obj', scene);
-  SceneLoader.Append('./assets/', 'snaggy.obj', scene);
-  SceneLoader.Append('./assets/', 'snaggy.obj', scene, (scene) => {
-    scene.getActiveMeshes().data[1].rotate(new Vector3(0,1,0), Math.PI / 2);
-    scene.getActiveMeshes().data[2].translate(new Vector3(1, 0, 0), 2);
-    showWorldAxis(5, scene);
-  });
+  const array = Array(arrayOfPoints.length - 1).fill(undefined);
+  const arrPromises = array.map(() => SceneLoader.AppendAsync('./assets/', 'snaggy.obj', scene));
 
+  Promise.all([...arrPromises]).then(() => {
+    scene.getActiveMeshes().data[0].rotate(new Vector3(0, 0, 1), Math.PI / 2)
+    console.log(scene.getActiveMeshes().data);
+  });
 
   return scene;
 };
