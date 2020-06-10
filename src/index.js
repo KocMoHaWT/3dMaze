@@ -7,7 +7,7 @@ import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import { GridMaterial } from '@babylonjs/materials/grid';
-import { CSG, SceneLoader } from '@babylonjs/core';
+import {Color3, CSG, DynamicTexture, SceneLoader, StandardMaterial} from '@babylonjs/core';
 import { OBJExport } from '@babylonjs/serializers/OBJ';
 import '@babylonjs/core/Meshes/meshBuilder';
 import '@babylonjs/core/Materials/standardMaterial';
@@ -15,6 +15,41 @@ import { OBJFileLoader } from  'babylonjs-loaders';
 
 const canvas = document.getElementById('renderCanvas');
 const engine = new Engine(canvas);
+
+function showWorldAxis(size, scene) {
+  var makeTextPlane = function(text, color, size) {
+    var dynamicTexture = new DynamicTexture("DynamicTexture", 50, scene, true);
+    dynamicTexture.hasAlpha = true;
+    dynamicTexture.drawText(text, 5, 40, "bold 36px Arial", color , "transparent", true);
+    var plane = Mesh.CreatePlane("TextPlane", size, scene, true);
+    plane.material = new StandardMaterial("TextPlaneMaterial", scene);
+    plane.material.backFaceCulling = false;
+    plane.material.specularColor = new Color3(0, 0, 0);
+    plane.material.diffuseTexture = dynamicTexture;
+    return plane;
+  };
+  var axisX = Mesh.CreateLines("axisX", [
+    Vector3.Zero(), new BABYLON.Vector3(size, 0, 0), new Vector3(size * 0.95, 0.05 * size, 0),
+    new Vector3(size, 0, 0), new Vector3(size * 0.95, -0.05 * size, 0)
+  ], scene);
+  axisX.color = new Color3(1, 0, 0);
+  var xChar = makeTextPlane("X", "red", size / 10);
+  xChar.position = new Vector3(0.9 * size, -0.05 * size, 0);
+  var axisY = Mesh.CreateLines("axisY", [
+    Vector3.Zero(), new Vector3(0, size, 0), new Vector3( -0.05 * size, size * 0.95, 0),
+    new Vector3(0, size, 0), new Vector3( 0.05 * size, size * 0.95, 0)
+  ], scene);
+  axisY.color = new Color3(0, 1, 0);
+  var yChar = makeTextPlane("Y", "green", size / 10);
+  yChar.position = new Vector3(0, 0.9 * size, -0.05 * size);
+  var axisZ = Mesh.CreateLines("axisZ", [
+    Vector3.Zero(), new Vector3(0, 0, size), new Vector3( 0 , -0.05 * size, size * 0.95),
+    new Vector3(0, 0, size), new Vector3( 0, 0.05 * size, size * 0.95)
+  ], scene);
+  axisZ.color = new Color3(0, 0, 1);
+  var zChar = makeTextPlane("Z", "blue", size / 10);
+  zChar.position = new Vector3(0, 0.05 * size, 0.9 * size);
+};
 
 const createScene = function () {
 
@@ -29,8 +64,14 @@ const createScene = function () {
   const light = new HemisphericLight('light1', new Vector3(0, 1, 0), scene);
 
   SceneLoader.RegisterPlugin(new OBJFileLoader())
-
   SceneLoader.Append('./assets/', 'snaggy.obj', scene);
+  SceneLoader.Append('./assets/', 'snaggy.obj', scene);
+  SceneLoader.Append('./assets/', 'snaggy.obj', scene, (scene) => {
+    scene.getActiveMeshes().data[1].rotate(new Vector3(0,1,0), Math.PI / 2);
+    scene.getActiveMeshes().data[2].translate(new Vector3(1, 0, 0), 2);
+    showWorldAxis(5, scene);
+  });
+
 
   return scene;
 };
