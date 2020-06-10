@@ -30,7 +30,12 @@ const createScene = function () {
 
   SceneLoader.RegisterPlugin(new OBJFileLoader())
 
-  SceneLoader.Append('./assets/', 'snaggy.obj', scene);
+  Promise.all([
+    SceneLoader.AppendAsync('./assets/', 'snaggy.obj', scene),
+    SceneLoader.AppendAsync('./assets/', 'snaggy.obj', scene),
+  ]).then(() => {
+    scene.meshes.data[0].rotate(new Vector3(0, 0, 1), Math.PI / 2)
+  })
 
   return scene;
 };
