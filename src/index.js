@@ -13,6 +13,7 @@ import '@babylonjs/core/Meshes/meshBuilder';
 import '@babylonjs/core/Materials/standardMaterial';
 import { OBJFileLoader } from  'babylonjs-loaders';
 import arrayOfPoints from "./labyrinth";
+import { Angle, Vector2 } from 'babylonjs';
 
 const canvas = document.getElementById('renderCanvas');
 const engine = new Engine(canvas);
@@ -52,11 +53,13 @@ function showWorldAxis(size, scene) {
   zChar.position = new Vector3(0, 0.05 * size, 0.9 * size);
 };
 
+// const moveObj = (element) => {
+//
+// };
 const createScene = function () {
 
   const scene = new Scene(engine);
   const material = new GridMaterial('grid', scene);
-
   // const camera = new FreeCamera('camera', new Vector3(0, 5, -100), scene);
   const  camera = new ArcRotateCamera('Camera', Math.PI / 2, Math.PI / 2, 4, Vector3.Zero(), scene);
   camera.attachControl(canvas, true);
@@ -64,13 +67,24 @@ const createScene = function () {
   camera.attachControl(canvas, false);
   const light = new HemisphericLight('light1', new Vector3(0, 1, 0), scene);
 
-  SceneLoader.RegisterPlugin(new OBJFileLoader())
-  const array = Array(arrayOfPoints.length - 1).fill(undefined);
-  const arrPromises = array.map(() => SceneLoader.AppendAsync('./assets/', 'snaggy.obj', scene));
+  SceneLoader.RegisterPlugin(new OBJFileLoader());
+  const arrPromises = arrayOfPoints.map(() => SceneLoader.AppendAsync('./assets/', 'snaggy.obj', scene));
 
   Promise.all([...arrPromises]).then(() => {
-    scene.getActiveMeshes().data[0].rotate(new Vector3(0, 0, 1), Math.PI / 2)
-    console.log(scene.getActiveMeshes().data);
+
+    arrayOfPoints.map((item, index) => {
+      const element = scene.getActiveMeshes().data[index];
+      if (element) {        
+        const newVector = new Vector3(...item[1], 0).subtract(new Vector3(...item[0], 0));
+        const rotationAngle = Angle.BetweenTwoPoints(new Vector2(...item[0]), new Vector2(...item[1]));
+        console.log(rotationAngle)
+        element.locallyTranslate(new Vector3(...item[0], 0)).rotate(new Vector3(0,0,1), rotationAngle.radians());
+        // .rotate(new Vector3(0, 0, 1), Math.PI * (index % 2 !== 1 ? 0 : 0.5));  
+      }
+      // .locallyTranslate(new Vector3(0, 0 , 0))
+    // .rotate(new Vector3(0, 0, 1), Math.PI / (index % 2 !== 1 ? 1 : 2));
+    })
+    // .data[0].rotate(new Vector3(0, 0, 1), Math.PI / 2);
   });
 
   return scene;
