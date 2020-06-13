@@ -9,9 +9,6 @@ const createContent = (scene) => {
   const ground = Mesh.CreateGround('ground', 10, 10, 10, scene, true);
   ground.material = wireframeMaterial;
   skewMesh(ground);
-
-  const ground2 = Mesh.CreateGround('ground', 10, 10, 10, scene, true);
-  ground2.material = wireframeMaterial;
 };
 
 export default createContent;

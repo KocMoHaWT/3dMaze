@@ -1,6 +1,6 @@
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { Engine } from '@babylonjs/core/Engines/engine';
-import { HemisphericLight } from '@babylonjs/core';
+import { HemisphericLight, Mesh, StandardMaterial } from '@babylonjs/core';
 import { Scene } from '@babylonjs/core/scene';
 import { Vector3 } from '@babylonjs/core/Maths/math';
 
@@ -27,11 +27,22 @@ const createLight = (scene) => {
   return light;
 };
 
+const createGround = (scene) => {
+  const wireframeMaterial = new StandardMaterial('wireframe', scene);
+  wireframeMaterial.wireframe = true;
+
+  const ground = Mesh.CreateGround('ground', 10, 10, 10, scene, true);
+  ground.material = wireframeMaterial;
+
+  return ground;
+};
+
 const createScene = () => {
   const scene = new Scene(engine);
   createCamera(scene);
   showWorldAxis(3, scene);
   createLight(scene);
+  createGround(scene);
 
   testSkew(scene);
 
