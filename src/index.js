@@ -1,13 +1,13 @@
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { Engine } from '@babylonjs/core/Engines/engine';
-import { HemisphericLight, SceneLoader } from '@babylonjs/core';
+import { HemisphericLight } from '@babylonjs/core';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
-import { OBJFileLoader } from '@babylonjs/loaders';
 import { Scene } from '@babylonjs/core/scene';
 import { StandardMaterial } from '@babylonjs/core/Materials';
 import { Vector3 } from '@babylonjs/core/Maths/math';
 
 import showWorldAxis from './utils/showWorldAxis';
+import { skewMesh } from './utils/skewMesh';
 
 const canvas = document.getElementById('renderCanvas');
 
@@ -37,17 +37,9 @@ const createScene = () => {
   const wireframeMaterial = new StandardMaterial('wireframe', scene);
   wireframeMaterial.wireframe = true;
 
-  SceneLoader.RegisterPlugin(new OBJFileLoader());
-
-  Promise.all([
-    SceneLoader.AppendAsync('./assets/', 'snaggy.obj', scene),
-    SceneLoader.AppendAsync('./assets/', 'snaggy.obj', scene),
-  ]).then(() => {
-    scene.getActiveMeshes().data[0].rotate(new Vector3(0, 0, 1), Math.PI / 2);
-  });
-
   const ground = Mesh.CreateGround('ground', 10, 10, 10, scene);
   ground.material = wireframeMaterial;
+  skewMesh(ground);
 
   return scene;
 };
