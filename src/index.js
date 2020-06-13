@@ -60,8 +60,7 @@ function showWorldAxis(size, scene) {
 //
 // };
 const createCamera = (scene) => {
-  const cameraAngle = Math.PI / 4 + Math.PI / 8;
-  const camera = new ArcRotateCamera('Camera', cameraAngle, cameraAngle, 16, Vector3.Zero(), scene);
+  const camera = new ArcRotateCamera('Camera', - Math.PI / 2, Math.PI / 2, 50, Vector3.Zero(), scene);
   camera.allowUpsideDown = false;
   camera.attachControl(canvas, true);
   camera.setTarget(Vector3.Zero());
