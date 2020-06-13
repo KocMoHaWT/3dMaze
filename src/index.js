@@ -1,26 +1,21 @@
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { Engine } from '@babylonjs/core/Engines/engine';
-import { HemisphericLight, SceneLoader } from '@babylonjs/core';
+import { HemisphericLight, Color3, CSG, DynamicTexture, SceneLoader, StandardMaterial } from '@babylonjs/core';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { OBJFileLoader } from '@babylonjs/loaders';
 import { Scene } from '@babylonjs/core/scene';
-import { StandardMaterial } from '@babylonjs/core/Materials';
 import { Vector3 } from '@babylonjs/core/Maths/math';
 import { FreeCamera } from '@babylonjs/core/Cameras/freeCamera';
-import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera'
-import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
-import { Mesh } from '@babylonjs/core/Meshes/mesh';
+
+
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import { GridMaterial } from '@babylonjs/materials/grid';
-import {Color3, CSG, DynamicTexture, SceneLoader, StandardMaterial} from '@babylonjs/core';
 import { OBJExport } from '@babylonjs/serializers/OBJ';
 import '@babylonjs/core/Meshes/meshBuilder';
 import '@babylonjs/core/Materials/standardMaterial';
-import { OBJFileLoader } from  'babylonjs-loaders';
 import arrayOfPoints from "./labyrinth";
-import { Angle, Vector2 } from 'babylonjs';
+import { Angle, Vector2, TransformNode } from 'babylonjs';
 
-import showWorldAxis from './utils/showWorldAxis';
 
 const canvas = document.getElementById('renderCanvas');
 
@@ -84,33 +79,33 @@ const createLight = (scene) => {
 
 const createScene = () => {
   const scene = new Scene(engine);
+  const root = new TransformNode('zaraza', scene);
   createCamera(scene);
-  showWorldAxis(3, scene);
   createLight(scene);
   const wireframeMaterial = new StandardMaterial('wireframe', scene);
   wireframeMaterial.wireframe = true;
 
   SceneLoader.RegisterPlugin(new OBJFileLoader());
-  const arrPromises = arrayOfPoints.map(() => SceneLoader.AppendAsync('./assets/', 'snaggy.obj', scene));
-  Promise.all([...arrPromises]).then(() => {
+  
 
+  const arrPromises = arrayOfPoints.map(() => SceneLoader.AppendAsync('./assets/', 'snaggy-long.obj', scene));
+  Promise.all([...arrPromises]).then(() => {
     arrayOfPoints.map((item, index) => {
       const element = scene.getActiveMeshes().data[index];
+      element.parent = root;
       if (element) {
-        const newVector = new Vector3(...item[1], 0).subtract(new Vector3(...item[0], 0));
         const rotationAngle = Angle.BetweenTwoPoints(new Vector2(...item[0]), new Vector2(...item[1]));
         console.log(rotationAngle)
-        element.locallyTranslate(new Vector3(...item[0], 0)).rotate(new Vector3(0,0,1), rotationAngle.radians());
-        // .rotate(new Vector3(0, 0, 1), Math.PI * (index % 2 !== 1 ? 0 : 0.5));
-      }
-      // .locallyTranslate(new Vector3(0, 0 , 0))
-    // .rotate(new Vector3(0, 0, 1), Math.PI / (index % 2 !== 1 ? 1 : 2));
-    })
-    // .data[0].rotate(new Vector3(0, 0, 1), Math.PI / 2);
-  });
+        element.locallyTranslate(new Vector3(...item[0], 0).multiply(new Vector3(4,4,4))).rotate(new Vector3(0,0,1), rotationAngle.radians());
 
-  const ground = Mesh.CreateGround('ground', 10, 10, 10, scene);
-  ground.material = wireframeMaterial;
+      }
+    })
+  }).then(() => {
+    showWorldAxis(3, scene);
+    const ground = Mesh.CreateGround('ground', 10, 10, 10, scene);
+    ground.material = wireframeMaterial;
+  
+  });
 
   return scene;
 };
