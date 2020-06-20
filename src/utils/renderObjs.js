@@ -8,7 +8,6 @@ export const renderOBjs = (scene) => {
   return Promise.all([...arrPromises]).then(() => {
     arrayOfPoints.map((item, index) => {
       const element = scene.getActiveMeshes().data[index];
-      element.parent = root;
       if (element) {
         const rotationAngle = Angle.BetweenTwoPoints(new Vector2(...item[0]), new Vector2(...item[1]));
         // console.log(rotationAngle)

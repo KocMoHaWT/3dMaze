@@ -25,7 +25,7 @@ const canvas = document.getElementById('renderCanvas');
 const engine = new Engine(canvas);
 
 const createCamera = (scene) => {
-  const camera = new ArcRotateCamera('Camera', - Math.PI / 2, Math.PI / 2, 50, new Vector3(5, 0, 5), scene);
+  const camera = new ArcRotateCamera('Camera', - Math.PI / 2, Math.PI / 2, 20, new Vector3(5, 0, 5), scene);
   camera.allowUpsideDown = false;
   camera.attachControl(canvas, true);
   camera.setTarget(new Vector3(5, 0, 5));
@@ -65,25 +65,25 @@ const createScene = () => {
   SceneLoader.RegisterPlugin(new OBJFileLoader());
 
   renderOBjs(scene).then(() => {
-    const newMesh = Mesh.MergeMeshes([...scene.getActiveMeshes().data, box]);
+    // const labyrinthMesh = Mesh.MergeMeshes(scene.getActiveMeshes().data);
+    const newMesh = Mesh.MergeMeshes([...scene.getActiveMeshes().data]);
     var box = MeshBuilder.CreateBox("box", {height: 15, width: 20, depth: 2 }, scene);
     box.setPositionWithLocalVector(new Vector3(8,6,1));
 
     const boxCSG = CSG.FromMesh(box);
     const newMeshCSG = CSG.FromMesh(newMesh);
-    const newObj = newMeshCSG.subtract(boxCSG);
+    const newObj = boxCSG.subtract(newMeshCSG);
+    // labyrinthMesh.dispose();
     newMesh.dispose();
     box.dispose();
-    newObj.toMesh("csg", testMat, scene, false);
+    newObj.toMesh("csg", testMat, scene, true);
 
     // newMeshTest.locallyTranslate(new Vector3(4,4,4));
 
     // const testMesh = CSG.FromMesh(root);
     // showWorldAxis(3, scene);
     // createGround(scene);
-  }).then(() => {
-
-  });
+  })
 
   return scene;
 };
