@@ -6,6 +6,7 @@ import { OBJFileLoader } from '@babylonjs/loaders';
 import { Scene } from '@babylonjs/core/scene';
 import { Vector3 } from '@babylonjs/core/Maths/math';
 import { FreeCamera } from '@babylonjs/core/Cameras/freeCamera';
+import { renderOBjs } from "./utils/renderObjs";
 
 
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
@@ -51,28 +52,37 @@ const createGround = (scene) => {
 const createScene = () => {
   const scene = new Scene(engine);
   const root = new TransformNode('zaraza', scene);
+  const material = new GridMaterial("grid", scene);
+  const testMat = new StandardMaterial("myMaterial", scene);
+  testMat.diffuseColor = new Color3(0,0,1);
+  // testMat.emissiveColor = new Color3(0,0,1);
+
   createCamera(scene);
   createLight(scene);
 
-  testSkew(scene);
+  // testSkew(scene);
 
   SceneLoader.RegisterPlugin(new OBJFileLoader());
 
-  const arrPromises = arrayOfPoints.map(() => SceneLoader.AppendAsync('./assets/', 'snaggy-long.obj', scene));
-  Promise.all([...arrPromises]).then(() => {
-    arrayOfPoints.map((item, index) => {
-      const element = scene.getActiveMeshes().data[index];
-      element.parent = root;
-      if (element) {
-        const rotationAngle = Angle.BetweenTwoPoints(new Vector2(...item[0]), new Vector2(...item[1]));
-        console.log(rotationAngle)
-        element.locallyTranslate(new Vector3(...item[0], 0).multiply(new Vector3(4,4,4))).rotate(new Vector3(0,0,1), rotationAngle.radians());
+  renderOBjs(scene).then(() => {
+    const newMesh = Mesh.MergeMeshes([...scene.getActiveMeshes().data, box]);
+    var box = MeshBuilder.CreateBox("box", {height: 15, width: 20, depth: 2 }, scene);
+    box.setPositionWithLocalVector(new Vector3(8,6,1));
 
-      }
-    })
+    const boxCSG = CSG.FromMesh(box);
+    const newMeshCSG = CSG.FromMesh(newMesh);
+    const newObj = newMeshCSG.subtract(boxCSG);
+    newMesh.dispose();
+    box.dispose();
+    newObj.toMesh("csg", testMat, scene, false);
+
+    // newMeshTest.locallyTranslate(new Vector3(4,4,4));
+
+    // const testMesh = CSG.FromMesh(root);
+    // showWorldAxis(3, scene);
+    // createGround(scene);
   }).then(() => {
-    showWorldAxis(3, scene);
-    createGround(scene);
+
   });
 
   return scene;
