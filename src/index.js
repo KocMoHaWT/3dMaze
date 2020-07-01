@@ -35,7 +35,7 @@ const createCamera = (scene) => {
 };
 
 const createLight = (scene) => {
-  const light = new HemisphericLight('light1', new Vector3(0, 1, 0), scene);
+  const light = new HemisphericLight('light1', new Vector3(0.5, 1, 0.25), scene);
   return light;
 };
 
@@ -54,7 +54,7 @@ const createScene = () => {
   const root = new TransformNode('zaraza', scene);
   const material = new GridMaterial("grid", scene);
   const testMat = new StandardMaterial("myMaterial", scene);
-  testMat.diffuseColor = new Color3(0,0,1);
+  // testMat.diffuseColor = new Color3(0,0,1);
   // testMat.emissiveColor = new Color3(0,0,1);
 
   createCamera(scene);
@@ -65,24 +65,44 @@ const createScene = () => {
   SceneLoader.RegisterPlugin(new OBJFileLoader());
 
   renderOBjs(scene).then(() => {
-    // const labyrinthMesh = Mesh.MergeMeshes(scene.getActiveMeshes().data);
-    const newMesh = Mesh.MergeMeshes([...scene.getActiveMeshes().data]);
-    var box = MeshBuilder.CreateBox("box", {height: 15, width: 20, depth: 2 }, scene);
-    box.setPositionWithLocalVector(new Vector3(8,6,1));
+    // const newMesh = Mesh.MergeMeshes([...scene.getActiveMeshes().data]);
+    const objs = scene.getActiveMeshes().data.map(x => x);
+   var box = MeshBuilder.CreateBox("box", {height: 16, width: 20, depth: 3 }, scene);
+    box.setPositionWithLocalVector(new Vector3(8,6,2.05));
 
-    const boxCSG = CSG.FromMesh(box);
-    const newMeshCSG = CSG.FromMesh(newMesh);
-    const newObj = boxCSG.subtract(newMeshCSG);
-    // labyrinthMesh.dispose();
-    newMesh.dispose();
+    let boxCSG = CSG .FromMesh(box);
+    objs.forEach((obj, i) => {
+        const newMeshCSG = CSG.FromMesh(obj);
+        boxCSG = boxCSG.subtract(newMeshCSG);
+        obj.dispose();
+      })
+
+    const newBox = boxCSG.toMesh("box", testMat, scene, false);
     box.dispose();
-    newObj.toMesh("csg", testMat, scene, true);
 
-    // newMeshTest.locallyTranslate(new Vector3(4,4,4));
+    // dich 
 
-    // const testMesh = CSG.FromMesh(root);
-    // showWorldAxis(3, scene);
-    // createGround(scene);
+    const obj = OBJExport.OBJ([newBox],false, "", true)
+    var saveBlob = (function () {
+    var a = document.createElement("a");
+    document.body.appendChild(a);
+    a.style = "display: none";
+    return function (blob, fileName) {
+        var url = window.URL.createObjectURL(blob);
+        a.href = url;
+        a.download = fileName;
+        a.click();
+        window.URL.revokeObjectURL(url);
+    };
+}());
+
+
+
+saveBlob(new Blob([obj]), 'newLabyrinth.obj');
+  console.log(obj);
+  OBJExport.ObjAsync(scene, "newLabyrinth").then((obj) => {
+    obj.downloadFiles();
+  });
   })
 
   return scene;
