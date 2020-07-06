@@ -10,7 +10,6 @@ export const renderOBjs = (scene) => {
       const element = scene.getActiveMeshes().data[index];
       if (element) {
         const rotationAngle = Angle.BetweenTwoPoints(new Vector2(...item[0]), new Vector2(...item[1]));
-        // console.log(rotationAngle)
         element.locallyTranslate(new Vector3(...item[0], 0)
         .multiply(new Vector3(4,4,0)))
         .rotate(new Vector3(0,0,1), rotationAngle.radians())
