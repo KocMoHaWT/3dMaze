@@ -7,6 +7,7 @@ import { Scene } from '@babylonjs/core/scene';
 import { Vector3 } from '@babylonjs/core/Maths/math';
 import { FreeCamera } from '@babylonjs/core/Cameras/freeCamera';
 import { renderOBjs } from "./utils/renderObjs";
+import createBox from "./utils/createBox";
 
 
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
@@ -51,24 +52,20 @@ const createGround = (scene) => {
 
 const createScene = () => {
   const scene = new Scene(engine);
-  const root = new TransformNode('zaraza', scene);
-  const material = new GridMaterial("grid", scene);
   const testMat = new StandardMaterial("myMaterial", scene);
-  // testMat.diffuseColor = new Color3(0,0,1);
-  // testMat.emissiveColor = new Color3(0,0,1);
 
   createCamera(scene);
   createLight(scene);
-
-  // testSkew(scene);
 
   SceneLoader.RegisterPlugin(new OBJFileLoader());
 
   renderOBjs(scene).then(() => {
     // const newMesh = Mesh.MergeMeshes([...scene.getActiveMeshes().data]);
     const objs = scene.getActiveMeshes().data.map(x => x);
-   var box = MeshBuilder.CreateBox("box", {height: 16, width: 20, depth: 3 }, scene);
-    box.setPositionWithLocalVector(new Vector3(8,6,2.05));
+    //
+    // var box = MeshBuilder.CreateBox("box", {height: 16, width: 20, depth: 3 }, scene);
+    // box.setPositionWithLocalVector(new Vector3(8,6,2.05));
+    const box = createBox(objs, scene);
 
     let boxCSG = CSG .FromMesh(box);
     objs.forEach((obj, i) => {
@@ -79,32 +76,7 @@ const createScene = () => {
 
     const newBox = boxCSG.toMesh("box", testMat, scene, false);
     box.dispose();
-
-    // dich 
-
-    const obj = OBJExport.OBJ([newBox],false, "", true)
-    var saveBlob = (function () {
-    var a = document.createElement("a");
-    document.body.appendChild(a);
-    a.style = "display: none";
-    return function (blob, fileName) {
-        var url = window.URL.createObjectURL(blob);
-        a.href = url;
-        a.download = fileName;
-        a.click();
-        window.URL.revokeObjectURL(url);
-    };
-}());
-
-
-
-saveBlob(new Blob([obj]), 'newLabyrinth.obj');
-  console.log(obj);
-  OBJExport.ObjAsync(scene, "newLabyrinth").then((obj) => {
-    obj.downloadFiles();
-  });
   })
-
   return scene;
 };
 
