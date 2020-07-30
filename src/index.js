@@ -25,6 +25,8 @@ const canvas = document.getElementById('renderCanvas');
 
 const engine = new Engine(canvas);
 
+const OBJ_FILE_NAME = 'coffin.obj';
+
 const createCamera = (scene) => {
   const camera = new ArcRotateCamera('Camera', - Math.PI / 2, Math.PI / 2, 20, new Vector3(5, 0, 5), scene);
   camera.allowUpsideDown = false;
@@ -59,23 +61,28 @@ const createScene = () => {
 
   SceneLoader.RegisterPlugin(new OBJFileLoader());
 
-  renderOBjs(scene).then(() => {
+  renderOBjs(scene, OBJ_FILE_NAME).then(() => {
     // const newMesh = Mesh.MergeMeshes([...scene.getActiveMeshes().data]);
     const objs = scene.getActiveMeshes().data.map(x => x);
     //
     // var box = MeshBuilder.CreateBox("box", {height: 16, width: 20, depth: 3 }, scene);
     // box.setPositionWithLocalVector(new Vector3(8,6,2.05));
-    const box = createBox(objs, scene);
+
+    // NOTE: we need assymetric paddings to get good border after skew
+    const paddingsVector = new Vector3(1, 2, 0);
+    const box = createBox(objs, scene, paddingsVector);
 
     let boxCSG = CSG.FromMesh(box);
     objs.forEach((obj, i) => {
       const newMeshCSG = CSG.FromMesh(obj);
       boxCSG = boxCSG.subtract(newMeshCSG);
-      obj.dispose();
+      // obj.dispose();
     });
 
     const newBox = boxCSG.toMesh("box", testMat, scene, false);
     box.dispose();
+
+    objs.forEach(obj => obj.dispose());
   });
   return scene;
 };

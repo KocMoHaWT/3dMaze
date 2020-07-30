@@ -3,8 +3,8 @@ import {SceneLoader} from "@babylonjs/core";
 import {Angle, Vector2} from "babylonjs";
 import {Vector3} from "@babylonjs/core/Maths/math";
 
-export const renderOBjs = (scene) => {
-  const arrPromises = arrayOfPoints.map(() => SceneLoader.AppendAsync('./assets/', 'kirpich.obj', scene));
+export const renderOBjs = (scene, filename) => {
+  const arrPromises = arrayOfPoints.map(() => SceneLoader.AppendAsync('./assets/', filename, scene));
   return Promise.all([...arrPromises]).then(() => {
     arrayOfPoints.map((item, index) => {
       const element = scene.getActiveMeshes().data[index];
