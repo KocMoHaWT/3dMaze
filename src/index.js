@@ -67,16 +67,16 @@ const createScene = () => {
     // box.setPositionWithLocalVector(new Vector3(8,6,2.05));
     const box = createBox(objs, scene);
 
-    let boxCSG = CSG .FromMesh(box);
+    let boxCSG = CSG.FromMesh(box);
     objs.forEach((obj, i) => {
-        const newMeshCSG = CSG.FromMesh(obj);
-        boxCSG = boxCSG.subtract(newMeshCSG);
-        obj.dispose();
-      })
+      const newMeshCSG = CSG.FromMesh(obj);
+      boxCSG = boxCSG.subtract(newMeshCSG);
+      obj.dispose();
+    });
 
     const newBox = boxCSG.toMesh("box", testMat, scene, false);
     box.dispose();
-  })
+  });
   return scene;
 };
 
