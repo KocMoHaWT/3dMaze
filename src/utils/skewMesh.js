@@ -1,5 +1,6 @@
 import { Vector3, VertexBuffer } from '@babylonjs/core';
 import * as R from 'ramda';
+import { serializeVerticles } from './index';
 
 const FULL_CIRCLE_RADIANS = Math.PI * 2;
 const POSITION_KIND = VertexBuffer.PositionKind;
@@ -31,9 +32,6 @@ const tubeMeshPoint = R.curry((radius, perimeter, point) => {
   const newPotision = new Vector3(xX, yY, zZ);
   return newPotision;
 });
-
-const serializeVector = ({ x, y, z }) => [x, y, z];
-const serializeVerticles = R.pipe(R.map(serializeVector), R.flatten);
 
 export const skewMesh = (mesh) => {
   const positions = mesh.getVerticesData(POSITION_KIND);
