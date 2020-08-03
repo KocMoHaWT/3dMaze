@@ -17,7 +17,7 @@ import arrayOfPoints from "./labyrinth";
 import { Angle, Vector2, TransformNode } from 'babylonjs';
 
 import showWorldAxis from './utils/showWorldAxis';
-import testSkew from './demos/testSkew';
+import testBrick from './demos/testBrickShape';
 
 const canvas = document.getElementById('renderCanvas');
 
@@ -50,30 +50,14 @@ const createGround = (scene) => {
 
 const createScene = () => {
   const scene = new Scene(engine);
-  const root = new TransformNode('zaraza', scene);
+
   createCamera(scene);
   createLight(scene);
 
-  testSkew(scene);
+  testBrick(scene);
 
-  SceneLoader.RegisterPlugin(new OBJFileLoader());
-
-  const arrPromises = arrayOfPoints.map(() => SceneLoader.AppendAsync('./assets/', 'snaggy-long.obj', scene));
-  Promise.all([...arrPromises]).then(() => {
-    arrayOfPoints.map((item, index) => {
-      const element = scene.getActiveMeshes().data[index];
-      element.parent = root;
-      if (element) {
-        const rotationAngle = Angle.BetweenTwoPoints(new Vector2(...item[0]), new Vector2(...item[1]));
-        console.log(rotationAngle)
-        element.locallyTranslate(new Vector3(...item[0], 0).multiply(new Vector3(4,4,4))).rotate(new Vector3(0,0,1), rotationAngle.radians());
-
-      }
-    })
-  }).then(() => {
-    showWorldAxis(3, scene);
-    createGround(scene);
-  });
+  showWorldAxis(3, scene);
+  createGround(scene);
 
   return scene;
 };
