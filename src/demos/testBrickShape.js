@@ -6,7 +6,12 @@ const createContent = (scene) => {
   const wireframeMaterial = new StandardMaterial('wireframe', scene);
   // wireframeMaterial.wireframe = true;
 
-  const mesh = createBrick(scene, { sections: 1, sectionSize: 1 });
+  const mesh = createBrick(scene, {
+    sections: 3,
+    sectionWidth: 1,
+    wallHeight: 0.2,
+    roofHeight: 1,
+  });
   mesh.material = wireframeMaterial;
 };
 
