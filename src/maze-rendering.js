@@ -166,10 +166,10 @@ const createScene = function () {
 
 
 // saveBlob(new Blob([obj]), 'test.obj');
-  // console.log(obj);
-  // OBJExport.ObjAsync(scene, "fileName1").then((obj) => {
-  //   obj.downloadFiles();
-  // });
+//   console.log(obj);
+//   OBJExport.ObjAsync(scene, "fileName1").then((obj) => {
+//     obj.downloadFiles();
+//   });
 
 
   //OBJ([planeSubstract], true, material, true)

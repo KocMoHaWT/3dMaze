@@ -16,7 +16,7 @@ const canvas = document.getElementById('renderCanvas');
 const engine = new Engine(canvas);
 
 const createCamera = (scene) => {
-  const camera = new ArcRotateCamera('Camera', - Math.PI / 2, Math.PI / 2, 50, new Vector3(5, 0, 5), scene);
+  const camera = new ArcRotateCamera('Camera', - Math.PI / 2, Math.PI / 2, 20, new Vector3(5, 0, 5), scene);
   camera.allowUpsideDown = false;
   camera.attachControl(canvas, true);
   camera.setTarget(new Vector3(5, 0, 5));
@@ -26,7 +26,7 @@ const createCamera = (scene) => {
 };
 
 const createLight = (scene) => {
-  const light = new HemisphericLight('light1', new Vector3(0, 1, 0), scene);
+  const light = new HemisphericLight('light1', new Vector3(0.5, 1, 0.25), scene);
   return light;
 };
 
