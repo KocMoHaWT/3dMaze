@@ -1,6 +1,7 @@
 import { CSG, Vector3 } from '@babylonjs/core';
 
 import buildLabirynthBlocks from '../utils/buildLabirynthBlocks';
+import createBox from '../utils/createBox';
 import labyrinthModel from '../labyrinth'
 
 const BRICK_CONFIG = {

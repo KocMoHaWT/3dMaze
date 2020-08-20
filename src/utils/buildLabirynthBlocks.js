@@ -2,7 +2,6 @@ import {Angle, Vector2} from "babylonjs";
 import {Vector3} from "@babylonjs/core/Maths/math";
 
 import createBrick from './createBrick'
-import createBox from './createBox'
 
 const buildSingleBlock = (scene, brickConfig, item) => {
   const element = createBrick(scene, brickConfig)
