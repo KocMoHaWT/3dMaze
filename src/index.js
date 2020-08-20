@@ -1,23 +1,15 @@
+import '@babylonjs/core/Materials/standardMaterial';
+import '@babylonjs/core/Meshes/meshBuilder';
+
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { Engine } from '@babylonjs/core/Engines/engine';
-import { HemisphericLight, Color3, CSG, DynamicTexture, SceneLoader, StandardMaterial } from '@babylonjs/core';
+import { HemisphericLight, StandardMaterial } from '@babylonjs/core';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
-import { OBJFileLoader } from '@babylonjs/loaders';
 import { Scene } from '@babylonjs/core/scene';
 import { Vector3 } from '@babylonjs/core/Maths/math';
-import { FreeCamera } from '@babylonjs/core/Cameras/freeCamera';
 
-
-import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
-import { GridMaterial } from '@babylonjs/materials/grid';
-import { OBJExport } from '@babylonjs/serializers/OBJ';
-import '@babylonjs/core/Meshes/meshBuilder';
-import '@babylonjs/core/Materials/standardMaterial';
-import arrayOfPoints from "./labyrinth";
-import { Angle, Vector2, TransformNode } from 'babylonjs';
-
+import createContent from './demos/testFullCycle';
 import showWorldAxis from './utils/showWorldAxis';
-import testBrick from './demos/testBrickShape';
 
 const canvas = document.getElementById('renderCanvas');
 
@@ -54,7 +46,7 @@ const createScene = () => {
   createCamera(scene);
   createLight(scene);
 
-  testBrick(scene);
+  createContent(scene);
 
   showWorldAxis(3, scene);
   createGround(scene);
