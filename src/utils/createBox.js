@@ -10,6 +10,7 @@ const createBox = (objs, scene, paddings) => {
   console.log(boxSize);
 
   const box = MeshBuilder.CreateBox('box', {
+    updatable: true,
     height: sizeWithPaddings.y,
     width: sizeWithPaddings.x,
     depth: sizeWithPaddings.z + 2,
