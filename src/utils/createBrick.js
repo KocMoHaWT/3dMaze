@@ -9,11 +9,14 @@ import { serializeVerticles } from './index'
 //  ----------
 //  sections (quantity)
 
-const rectangle = curry((xSize, ySize, h, padding) => [
-  new Vector3(0 + padding, 0 + padding, h),
-  new Vector3(xSize - padding, 0 + padding, h),
-  new Vector3(xSize - padding, ySize - padding, h),
-  new Vector3(0 + padding, ySize - padding, h),
+const v3 = (...args) => new Vector3(...args)
+const offsetVector = (o) => new Vector3(o, o, 0)
+
+const rectangle = curry((offset, xSize, ySize, h, padding) => [
+  v3(padding, padding, h).add(offsetVector(offset)),
+  v3(xSize - padding, padding, h).add(offsetVector(offset)),
+  v3(xSize - padding, ySize - padding, h).add(offsetVector(offset)),
+  v3(padding, ySize - padding, h).add(offsetVector(offset)),
 ])
 
 // indices -- counter clockwise
@@ -28,8 +31,9 @@ const createBrick = (scene, {
 }) => {
   const w = sectionWidth
   const l = sectionWidth * sections
+  const offset = sectionWidth / -2
 
-  const brickLevel = rectangle(l, w)
+  const brickLevel = rectangle(offset, l, w)
 
   const groundPlane = brickLevel(0, 0)
   const middlePlane = brickLevel(wallHeight, 0)
@@ -57,8 +61,8 @@ const createBrick = (scene, {
   ]
 
   // WTF
-  const uvs = []
-  // const uvs = [0, 1, 0, 0, 1, 0]
+  // const uvs = []
+  const uvs = [0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0]
 
   const normals = []
   VertexData.ComputeNormals(positions, indices, normals)
@@ -71,7 +75,8 @@ const createBrick = (scene, {
   vertexData.uvs = uvs
 
   const mesh = new Mesh('custom-mesh', scene)
-  vertexData.applyToMesh(mesh)
+  vertexData.applyToMesh(mesh, true)
+  mesh.convertToFlatShadedMesh()
 
   return mesh
 }

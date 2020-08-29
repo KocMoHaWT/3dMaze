@@ -8,8 +8,10 @@ import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { Scene } from '@babylonjs/core/scene';
 import { Vector3 } from '@babylonjs/core/Maths/math';
 
-import createContent from './demos/testFullCycle';
 import showWorldAxis from './utils/showWorldAxis';
+
+// import createContent from './demos/testSkew';
+import createContent from './demos/testFullCycle';
 
 const canvas = document.getElementById('renderCanvas');
 
