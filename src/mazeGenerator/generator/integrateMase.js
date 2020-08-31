@@ -11,11 +11,11 @@ const integratedLabyrinth = (maze) => maze.map((column, columnIndex) => column.m
   if (rowItem.type === 'FINISH') {
     connections.push([[columnIndex, rowIndex], [columnIndex + 1, rowIndex]]);
   }
-
+  // check current cell's right wall with the left wall of neighbour
   if (rightN && rowItem.walls[1] === 0 && rightN.walls[3] === 0) {
     connections.push([[columnIndex, rowIndex], [columnIndex + 1, rowIndex]]);
   }
-
+  // check current cell's down wall with the upper wall of neighbour
   if (downN && rowItem.walls[2] === 0 && downN.walls[0] === 0) {
     connections.push([[columnIndex, rowIndex], [columnIndex, rowIndex + 1]]);
   }
