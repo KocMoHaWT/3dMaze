@@ -8,7 +8,7 @@ import constants from '../mazeGenerator/constants';
 export const renderOBjs = (scene, filename) => {
   const arrPromises = Array(constants.CELL_COUNT).fill(null).map(() => SceneLoader.AppendAsync('./assets/', filename, scene));
   return Promise.all([...arrPromises]).then(() => {
-    integratedLabyrinth(generateMase()).map((item, index) => {
+    integratedLabyrinth(generateMase(24, 12)).map((item, index) => {
       const element = scene.getActiveMeshes().data[index];
       if (element) {
         // eslint-disable-next-line max-len

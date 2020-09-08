@@ -5,13 +5,6 @@ import { createWalls, toggleWallBits } from '../wallGenerator';
 import constants from '../constants';
 
 const FIRST_CELL = 'FIRST_CELL';
-const LAST_COORD = `${constants.GRID_SIZE - 1},${constants.GRID_SIZE - 1}`;
-
-const cellMarkers = new Map([
-  [FIRST_CELL, (cell) => cell.visit()], // first cell is inherently visited
-  ['0,0', 'START'],
-  [LAST_COORD, 'FINISH'],
-]);
 
 const createFilledArray = (length, predicate) => Array(length).fill(null).map(
   (_, i) => predicate(i),
@@ -20,20 +13,24 @@ const createFilledArray = (length, predicate) => Array(length).fill(null).map(
 const rCreateCell = R.curry(createCell);
 const initCell = rCreateCell(false, null, createWalls());
 
-function generateCells() {
-  const { GRID_SIZE } = constants;
-
+function generateCells(cols, rows) {
   return createFilledArray(
-    GRID_SIZE,
+    cols,
     (column) => createFilledArray(
-      GRID_SIZE,
+      rows,
       (row) => initCell(column, row),
     ),
   );
 }
 
-function markCell(cell, visitedCellsCount) {
+function markCell(cell, visitedCellsCount, cols, rows) {
   const key = visitedCellsCount === 0 ? FIRST_CELL : cell.toString();
+
+  const cellMarkers = new Map([
+    [FIRST_CELL, (cellBox) => cellBox.visit()], // first cell is inherently visited
+    ['0,0', 'START'],
+    [`${cols - 1},${rows - 1}`, 'FINISH'],
+  ]);
 
   if (cellMarkers.has(key)) {
     return cellMarkers.get(key);
@@ -41,18 +38,18 @@ function markCell(cell, visitedCellsCount) {
   return null;
 }
 
-function generateMase() {
-  const cells = generateCells();
+function generateMase(cols, rows) {
+  const cells = generateCells(cols, rows);
   let cell = cells[0][0];
   let visitedCellsCount = 0;
   const stack = [];
-  const { CELL_COUNT } = constants;
-  while (visitedCellsCount !== CELL_COUNT - 1) {
+  const gridSize = cols * rows;
+  while (visitedCellsCount !== gridSize - 1) {
     const neighbour = getUnvisitedNeighbour(cells, cell);
 
     const increment = neighbour ? 1 : 0;
 
-    cell.type = markCell(cell, visitedCellsCount);
+    cell.type = markCell(cell, visitedCellsCount, cols, rows);
 
     if (neighbour) {
       cell.isTrue = true;

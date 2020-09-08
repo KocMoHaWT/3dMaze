@@ -1,26 +1,22 @@
 // eslint-disable-next-line max-len
 const integratedLabyrinth = (maze) => maze.map((column, columnIndex) => column.map((rowItem, rowIndex) => {
   const connections = [];
-  const rightN = maze[columnIndex + 1] ? maze[columnIndex + 1][rowIndex] : null;
-  const downN = maze[rowIndex + 1] ? maze[columnIndex][rowIndex + 1] : null;
-
-  if (rowItem.type === 'START') {
-    connections.push([[columnIndex - 1, rowIndex], [columnIndex, rowIndex]]);
-  }
+  const rightNeighbour = maze[columnIndex + 1] ? maze[columnIndex + 1][rowIndex] : null;
+  const downNeighbour = maze[rowIndex + 1] ? maze[columnIndex][rowIndex + 1] : null;
 
   if (rowItem.type === 'FINISH') {
     connections.push([[columnIndex, rowIndex], [columnIndex + 1, rowIndex]]);
   }
   // check current cell's right wall with the left wall of neighbour
-  if (rightN && rowItem.walls[1] === 0 && rightN.walls[3] === 0) {
+  if (rightNeighbour && rowItem.walls[1] === 0) {
     connections.push([[columnIndex, rowIndex], [columnIndex + 1, rowIndex]]);
   }
   // check current cell's down wall with the upper wall of neighbour
-  if (downN && rowItem.walls[2] === 0 && downN.walls[0] === 0) {
+  if (downNeighbour && rowItem.walls[2] === 0) {
     connections.push([[columnIndex, rowIndex], [columnIndex, rowIndex + 1]]);
   }
 
   return connections;
-}).flat(1)).flat(1);
+})).flat(2);
 
 export default integratedLabyrinth;
