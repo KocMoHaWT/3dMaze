@@ -52,8 +52,8 @@ const createScene = () => {
 
   createContent(scene);
 
-  showWorldAxis(3, scene);
-  createGround(scene);
+  // showWorldAxis(3, scene);
+  // createGround(scene);
 
   return scene;
 };

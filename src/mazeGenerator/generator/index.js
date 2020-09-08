@@ -1,6 +1,6 @@
 import * as R from 'ramda';
 import { createCell } from '../cell/factory';
-import { getRandomCell, getUnvisitedNeighbour } from '../cell/locators';
+import { getUnvisitedNeighbour } from '../cell/locators';
 import { createWalls, toggleWallBits } from '../wallGenerator';
 import constants from '../constants';
 
