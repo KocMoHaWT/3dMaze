@@ -1,34 +1,23 @@
+import '@babylonjs/core/Materials/standardMaterial';
+import '@babylonjs/core/Meshes/meshBuilder';
+
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { Engine } from '@babylonjs/core/Engines/engine';
 import {
-  HemisphericLight, Color3, CSG, DynamicTexture, SceneLoader, StandardMaterial,
+  HemisphericLight, StandardMaterial,
 } from '@babylonjs/core';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
-import { OBJFileLoader } from '@babylonjs/loaders';
 import { Scene } from '@babylonjs/core/scene';
 import { Vector3 } from '@babylonjs/core/Maths/math';
-import { FreeCamera } from '@babylonjs/core/Cameras/freeCamera';
-
-import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
-import { GridMaterial } from '@babylonjs/materials/grid';
-import { OBJExport } from '@babylonjs/serializers/OBJ';
-
-import '@babylonjs/core/Materials/standardMaterial';
-import { Angle, Vector2, TransformNode } from 'babylonjs';
-import arrayOfPoints from './labyrinth';
-import createBox from './utils/createBox';
-import { renderOBjs } from './utils/renderObjs';
-import generateMase from './mazeGenerator/generator';
 
 import showWorldAxis from './utils/showWorldAxis';
-import testSkew from './demos/testSkew';
-import integratedLabyrinth from "./mazeGenerator/generator/integrateMase";
+
+// import createContent from './demos/testSkew';
+import createContent from './demos/testFullCycle';
 
 const canvas = document.getElementById('renderCanvas');
 
 const engine = new Engine(canvas);
-
-const OBJ_FILE_NAME = 'coffin.obj';
 
 const createCamera = (scene) => {
   const camera = new ArcRotateCamera('Camera', -Math.PI / 2, Math.PI / 2, 20, new Vector3(5, 0, 5), scene);
@@ -57,36 +46,15 @@ const createGround = (scene) => {
 
 const createScene = () => {
   const scene = new Scene(engine);
-  const testMat = new StandardMaterial('myMaterial', scene);
 
   createCamera(scene);
   createLight(scene);
 
-  SceneLoader.RegisterPlugin(new OBJFileLoader());
+  createContent(scene);
 
-  renderOBjs(scene, OBJ_FILE_NAME).then(() => {
-    // const newMesh = Mesh.MergeMeshes([...scene.getActiveMeshes().data]);
-    const objs = scene.getActiveMeshes().data.map((x) => x);
-    //
-    // var box = MeshBuilder.CreateBox("box", {height: 16, width: 20, depth: 3 }, scene);
-    // box.setPositionWithLocalVector(new Vector3(8,6,2.05));
+  showWorldAxis(3, scene);
+  createGround(scene);
 
-    // NOTE: we need assymetric paddings to get good border after skew
-    const paddingsVector = new Vector3(1, 2, 0);
-    const box = createBox(objs, scene, paddingsVector);
-
-    let boxCSG = CSG.FromMesh(box);
-    objs.forEach((obj, i) => {
-      const newMeshCSG = CSG.FromMesh(obj);
-      boxCSG = boxCSG.subtract(newMeshCSG);
-      // obj.dispose();
-    });
-
-    const newBox = boxCSG.toMesh('box', testMat, scene, false);
-    box.dispose();
-
-    objs.forEach((obj) => obj.dispose());
-  });
   return scene;
 };
 

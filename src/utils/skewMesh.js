@@ -1,5 +1,6 @@
 import { Vector3, VertexBuffer } from '@babylonjs/core';
 import * as R from 'ramda';
+import { serializeVerticles } from './index';
 
 const FULL_CIRCLE_RADIANS = Math.PI * 2;
 const POSITION_KIND = VertexBuffer.PositionKind;
@@ -14,35 +15,44 @@ export const positionsToVectors = R.pipe(subdivide(3), R.map(createVector));
 export const getMeshSize = (mesh) => {
   const boundingInfo = mesh.getBoundingInfo();
   const { minimum, maximum } = boundingInfo;
-  const { x, y, z } = maximum.subtract(minimum);
-
-  return { width: x, heigth: y, depth: z };
+  return maximum.subtract(minimum);
 };
 
 const tubeMeshPoint = R.curry((radius, perimeter, point) => {
   const { x, y, z } = point;
   // TODO: compare to pivotPoint.X
   const distanceToPivot = x;
+  // TODO: compare to pivotPoint.Y
+  const depth = y
   const angle = (distanceToPivot / perimeter) * FULL_CIRCLE_RADIANS;
-  const xX = Math.cos(angle) * radius;
-  const yY = Math.sin(angle) * radius;
+  const xX = Math.cos(angle) * (radius + depth);
+  const yY = Math.sin(angle) * (radius + depth);
   const zZ = z;
 
   const newPotision = new Vector3(xX, yY, zZ);
   return newPotision;
 });
 
-const serializeVector = ({ x, y, z }) => [x, y, z];
-const serializeVerticles = R.pipe(R.map(serializeVector), R.flatten);
-
+// This function is gonna skew some random mesh AROUND specified random AXIS (any possible Vector3).
+// Let's pretend this is Oz for now
+// Most likely -- I want to do that globally
 export const skewMesh = (mesh) => {
-  const positions = mesh.getVerticesData(POSITION_KIND);
+  // Okay, so verticles are in local coordinate system for each mesh.
+  // in Babylon this thing is called
+  mesh.bakeCurrentTransformIntoVertices()
+  // Now I need to convert them to Vector a)
+  const positions = mesh.getVerticesData(POSITION_KIND)
+
+  // ya, we have vectors now, cool, cool
   const verticles = positionsToVectors(positions);
+  // Calculating target radius for a given perimeter
   const size = getMeshSize(mesh);
-  const { width: perimeter } = size;
+  const perimeter = size.x;
   const radius = Math.sqrt(perimeter / Math.PI);
 
-  const updatedVerticles = verticles.map(tubeMeshPoint(radius, perimeter));
+  // magically update position of every verticle, lol
+  const updatedVerticles = verticles.map(tubeMeshPoint(radius, perimeter))
   const updatedPositions = serializeVerticles(updatedVerticles);
+
   mesh.updateVerticesData(POSITION_KIND, updatedPositions);
 };
