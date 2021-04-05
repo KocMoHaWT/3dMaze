@@ -20,6 +20,7 @@ const BRICK_CONFIG = {
 
 const createContent = (scene) => {
   const material = new StandardMaterial('material', scene);
+  // material.wireframe = true;
   const blocks = buildLabirynthBlocks(scene, BRICK_CONFIG, labyrinthModel)
 
   // NOTE: we need asymmetric paddings to get good border after skew
@@ -31,14 +32,16 @@ const createContent = (scene) => {
   blocks.forEach((obj) => {
     const newMeshCSG = CSG.FromMesh(obj)
     boxCSG = boxCSG.subtract(newMeshCSG)
-    // obj.dispose()
+    obj.dispose()
   })
-  // box.dispose()
+  box.dispose()
 
   const newBox = boxCSG.toMesh('box', material, scene, false)
   // this thing allows following update of a mesh.
   // maybe I should keep it inside skew?
   newBox.markVerticesDataAsUpdatable(VertexBuffer.PositionKind, true)
+  newBox.locallyTranslate(new Vector3(1, -3.495, -3))
+  newBox.rotate(new Vector3(1, 0, 0), Math.PI / 2)
   skewMesh(newBox)
 };
 

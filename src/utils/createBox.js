@@ -1,5 +1,5 @@
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
-import { Mesh } from '@babylonjs/core';
+import { Mesh, StandardMaterial } from '@babylonjs/core';
 
 const createBox = (objs, scene, paddings) => {
   const singleMeshOfObjs = Mesh.MergeMeshes(objs, false);
@@ -12,9 +12,17 @@ const createBox = (objs, scene, paddings) => {
     updatable: true,
     height: sizeWithPaddings.y,
     width: sizeWithPaddings.x,
-    depth: sizeWithPaddings.z - 0.05,
+    depth: sizeWithPaddings.z + 1,
   }, scene);
-  box.setPositionWithLocalVector({ ...meshOffset, z: 1000 });
+
+  // const material = new StandardMaterial('material', scene);
+  // material.wireframe = true;
+  // box.material = material
+
+  // @NOTE: this fucking _z is a new key for Offset.
+  //        dunno what's going on, check dependencies, kinda version UP
+  const transition = { ...meshOffset, _z: meshOffset.z + 0.95 }
+  box.setPositionWithLocalVector(transition);
   singleMeshOfObjs.dispose();
   return box;
 };

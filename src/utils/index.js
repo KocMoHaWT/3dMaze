@@ -12,3 +12,13 @@ export const serializeVerticles = (list) => {
   })
   return arr;
 };
+
+export const hahahahahha = (list) => {
+  const arr = [];
+  const memoryOfKwa = list.map((item) => {
+    const vectorInArr = serializeVector(item).reverse();
+    arr.push(...vectorInArr)
+    return 'kwa'
+  })
+  return arr;
+};
