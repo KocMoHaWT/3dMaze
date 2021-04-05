@@ -12,12 +12,19 @@ import { serializeVerticles } from './index'
 const v3 = (...args) => new Vector3(...args)
 const offsetVector = (o) => new Vector3(o, o, 0)
 
-const rectangle = curry((offset, xSize, ySize, h, padding) => [
+// const rectangle = curry((offset, xSize, ySize, h, padding) => [
+//   v3(padding, padding, h).add(offsetVector(offset)),
+//   v3(xSize - padding, padding, h).add(offsetVector(offset)),
+//   v3(xSize - padding, ySize - padding, h).add(offsetVector(offset)),
+//   v3(padding, ySize - padding, h).add(offsetVector(offset)),
+// ])
+
+const rectangle = (offset, xSize, ySize, h, padding) => [
   v3(padding, padding, h).add(offsetVector(offset)),
   v3(xSize - padding, padding, h).add(offsetVector(offset)),
   v3(xSize - padding, ySize - padding, h).add(offsetVector(offset)),
   v3(padding, ySize - padding, h).add(offsetVector(offset)),
-])
+];
 
 // indices -- counter clockwise
 const triangulate = ([a, b, c, d]) => [a, c, b, a, d, c]
@@ -35,9 +42,12 @@ const createBrick = (scene, {
 
   const brickLevel = rectangle(offset, l, w)
 
-  const groundPlane = brickLevel(0, 0)
-  const middlePlane = brickLevel(wallHeight, 0)
-  const topPlane = brickLevel(wallHeight + roofHeight, roofPadding)
+  // const groundPlane = brickLevel(0, 0)
+  const groundPlane = rectangle(offset, l, w, 0, 0)
+  // const middlePlane = brickLevel(wallHeight, 0)
+  const middlePlane = rectangle(offset, l, w, wallHeight, 0)
+  // const topPlane = brickLevel(wallHeight + roofHeight, roofPadding)
+  const topPlane = rectangle(offset, l, w, wallHeight + roofHeight, roofPadding)
   const positions = serializeVerticles([
     ...groundPlane,
     ...middlePlane,

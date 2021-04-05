@@ -23,6 +23,7 @@ const createContent = (scene) => {
   ground.material = wireframeMaterial;
   ground.locallyTranslate(new Vector3(5, 0.5, 0))
   ground.rotate(new Vector3(0, 0, 1), Math.PI / 2)
+  console.log('ground',ground);
   skewMesh(ground)
 };
 

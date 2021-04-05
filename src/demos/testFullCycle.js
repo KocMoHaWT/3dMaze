@@ -23,16 +23,17 @@ const createContent = (scene) => {
   const blocks = buildLabirynthBlocks(scene, BRICK_CONFIG, labyrinthModel)
 
   // NOTE: we need asymmetric paddings to get good border after skew
-  const paddingsVector = new Vector3(1, 2, 0)
+  const paddingsVector = new Vector3(1, 1, 0)
   const box = createBox(blocks, scene, paddingsVector)
 
   let boxCSG = CSG.FromMesh(box)
-  box.dispose()
+
   blocks.forEach((obj) => {
     const newMeshCSG = CSG.FromMesh(obj)
     boxCSG = boxCSG.subtract(newMeshCSG)
-    obj.dispose()
+    // obj.dispose()
   })
+  // box.dispose()
 
   const newBox = boxCSG.toMesh('box', material, scene, false)
   // this thing allows following update of a mesh.

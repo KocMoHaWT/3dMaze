@@ -7,15 +7,14 @@ const createBox = (objs, scene, paddings) => {
   const meshSize = boxSize.maximum.subtract(boxSize.minimum);
   const meshOffset = singleMeshOfObjs.getBoundingInfo().boundingBox.center;
   const sizeWithPaddings = meshSize.add(paddings);
-  console.log(boxSize);
 
   const box = MeshBuilder.CreateBox('box', {
     updatable: true,
     height: sizeWithPaddings.y,
     width: sizeWithPaddings.x,
-    depth: sizeWithPaddings.z + 2,
+    depth: sizeWithPaddings.z - 0.05,
   }, scene);
-  box.setPositionWithLocalVector({ ...meshOffset, z: meshOffset.z + 1.5 });
+  box.setPositionWithLocalVector({ ...meshOffset, z: 1000 });
   singleMeshOfObjs.dispose();
   return box;
 };
