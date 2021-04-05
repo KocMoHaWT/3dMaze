@@ -9,6 +9,8 @@ import { skewMesh } from '../utils/skewMesh';
 import buildLabirynthBlocks from '../utils/buildLabirynthBlocks';
 import createBox from '../utils/createBox';
 import labyrinthModel from '../labyrinth'
+import integratedLabyrinth from "../mazeGenerator/generator/integrateMase";
+import generateMase from "../mazeGenerator/generator";
 
 const BRICK_CONFIG = {
   sectionWidth: 1.5,
@@ -18,10 +20,15 @@ const BRICK_CONFIG = {
   roofPadding: 0.3,
 }
 
+const labyrinthConfig = {
+  width: 30,
+  height: 10,
+}
+
 const createContent = (scene) => {
   const material = new StandardMaterial('material', scene);
-  // material.wireframe = true;
-  const blocks = buildLabirynthBlocks(scene, BRICK_CONFIG, labyrinthModel)
+  const maze = integratedLabyrinth(generateMase(labyrinthConfig.width, labyrinthConfig.height))
+  const blocks = buildLabirynthBlocks(scene, BRICK_CONFIG, maze)
 
   // NOTE: we need asymmetric paddings to get good border after skew
   const paddingsVector = new Vector3(1, 1, 0)

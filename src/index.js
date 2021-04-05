@@ -3,7 +3,9 @@ import '@babylonjs/core/Meshes/meshBuilder';
 
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { Engine } from '@babylonjs/core/Engines/engine';
-import { HemisphericLight, StandardMaterial } from '@babylonjs/core';
+import {
+  HemisphericLight, StandardMaterial,
+} from '@babylonjs/core';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { Scene } from '@babylonjs/core/scene';
 import { Vector3 } from '@babylonjs/core/Maths/math';
@@ -18,7 +20,7 @@ const canvas = document.getElementById('renderCanvas');
 const engine = new Engine(canvas);
 
 const createCamera = (scene) => {
-  const camera = new ArcRotateCamera('Camera', - Math.PI / 2, Math.PI / 2, 20, new Vector3(5, 0, 5), scene);
+  const camera = new ArcRotateCamera('Camera', -Math.PI / 2, Math.PI / 2, 20, new Vector3(5, 0, 5), scene);
   camera.allowUpsideDown = false;
   camera.attachControl(canvas, true);
   camera.setTarget(new Vector3(5, 0, 5));
@@ -50,8 +52,8 @@ const createScene = () => {
 
   createContent(scene);
 
-  showWorldAxis(3, scene);
-  createGround(scene);
+  // showWorldAxis(3, scene);
+  // createGround(scene);
 
   return scene;
 };
