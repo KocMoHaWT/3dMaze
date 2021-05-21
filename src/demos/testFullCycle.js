@@ -21,35 +21,37 @@ const BRICK_CONFIG = {
 }
 
 const labyrinthConfig = {
-  width: 30,
+  width: 10,
   height: 10,
 }
 
 const createContent = (scene) => {
   const material = new StandardMaterial('material', scene);
-  const maze = integratedLabyrinth(generateMase(labyrinthConfig.width, labyrinthConfig.height))
-  const blocks = buildLabirynthBlocks(scene, BRICK_CONFIG, maze)
+  const maze = integratedLabyrinth(generateMase(labyrinthConfig.width, labyrinthConfig.height));
+  const [blocks, finishBrick] = buildLabirynthBlocks(scene, BRICK_CONFIG, maze);
 
   // NOTE: we need asymmetric paddings to get good border after skew
   const paddingsVector = new Vector3(1, 1, 0)
   const box = createBox(blocks, scene, paddingsVector)
 
-  let boxCSG = CSG.FromMesh(box)
-
+  let boxCSG = CSG.FromMesh(box);
+  blocks.push(finishBrick);
   blocks.forEach((obj) => {
-    const newMeshCSG = CSG.FromMesh(obj)
-    boxCSG = boxCSG.subtract(newMeshCSG)
-    obj.dispose()
+    const newMeshCSG = CSG.FromMesh(obj);
+    boxCSG = boxCSG.subtract(newMeshCSG);
+    obj.dispose();
   })
-  box.dispose()
+  box.dispose();
 
   const newBox = boxCSG.toMesh('box', material, scene, false)
-  // this thing allows following update of a mesh.
-  // maybe I should keep it inside skew?
+  // // this thing allows following update of a mesh.
+  // // maybe I should keep it inside skew?
   newBox.markVerticesDataAsUpdatable(VertexBuffer.PositionKind, true)
-  newBox.locallyTranslate(new Vector3(1, -3.495, -3))
-  newBox.rotate(new Vector3(1, 0, 0), Math.PI / 2)
-  skewMesh(newBox)
+  newBox.locallyTranslate(new Vector3(1, -3.495, -3));
+  newBox.rotate(new Vector3(1, 0, 0), Math.PI / 2);
+  // added new rotation in order to turn mesh's exit to top  
+  newBox.rotate(new Vector3(0, 0, 1), Math.PI / 2);
+  // skewMesh(newBox)
 };
 
 export default createContent

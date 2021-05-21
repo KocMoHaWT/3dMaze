@@ -61,6 +61,8 @@ function generateMase(cols, rows) {
     cell = neighbour || stack.pop();
     visitedCellsCount += increment;
   }
+
+  
   return cells;
 }
 

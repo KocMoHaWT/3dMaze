@@ -5,7 +5,7 @@ const integratedLabyrinth = (maze) => maze.map((column, columnIndex) => column.m
   const downNeighbour = maze[rowIndex + 1] ? maze[columnIndex][rowIndex + 1] : null;
 
   if (rowItem.type === 'FINISH') {
-    connections.push([[columnIndex, rowIndex], [columnIndex + 1, rowIndex]]);
+        connections.push([[columnIndex, rowIndex], [columnIndex + 1, rowIndex]]);
   }
   // check current cell's right wall with the left wall of neighbour
   if (rightNeighbour && rowItem.walls[1] === 0) {

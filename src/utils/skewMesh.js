@@ -57,17 +57,16 @@ export const skewMesh = (mesh) => {
   mesh.bakeCurrentTransformIntoVertices()
   // Now I need to convert them to Vector a)
   const positions = mesh.getVerticesData(POSITION_KIND)
-
   // ya, we have vectors now, cool, cool
   const verticles = group(positions);
-  console.log('yooo')
   // Calculating target radius for a given perimeter
   const size = getMeshSize(mesh);
   const perimeter = size.x;
   const radius = Math.sqrt(perimeter / Math.PI);
 
-  // magically update position of every verticle, lol
+  // magically update position of every verticle, lol  /// like + 1
   const updatedVerticles = verticles.map(tubeMeshPoint(radius, perimeter))
+  console.log('updated varticles', updatedVerticles);
   const updatedPositions = hahahahahha(updatedVerticles);
 
   mesh.updateVerticesData(POSITION_KIND, updatedPositions);
