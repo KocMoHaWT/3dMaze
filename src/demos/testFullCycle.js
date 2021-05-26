@@ -21,22 +21,22 @@ const BRICK_CONFIG = {
 }
 
 const labyrinthConfig = {
-  width: 10,
   height: 10,
+  width: 5,
 }
 
 const createContent = (scene) => {
   const material = new StandardMaterial('material', scene);
   const maze = integratedLabyrinth(generateMase(labyrinthConfig.width, labyrinthConfig.height));
-  const [blocks, finishBrick] = buildLabirynthBlocks(scene, BRICK_CONFIG, maze);
+  const [blocks, finishBricks] = buildLabirynthBlocks(scene, BRICK_CONFIG, maze, labyrinthConfig);
 
   // NOTE: we need asymmetric paddings to get good border after skew
   const paddingsVector = new Vector3(1, 1, 0)
   const box = createBox(blocks, scene, paddingsVector)
 
   let boxCSG = CSG.FromMesh(box);
-  blocks.push(finishBrick);
-  blocks.forEach((obj) => {
+  console.log( [...blocks, ...finishBricks], 'wah');
+  [...blocks, ...finishBricks].forEach((obj) => {
     const newMeshCSG = CSG.FromMesh(obj);
     boxCSG = boxCSG.subtract(newMeshCSG);
     obj.dispose();

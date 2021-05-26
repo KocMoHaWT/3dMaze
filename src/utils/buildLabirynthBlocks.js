@@ -13,11 +13,30 @@ const buildSingleBlock = (scene, brickConfig, item) => {
     // .rotate(new Vector3(1,0,0), Math.PI / 2)
 }
 
-const buildLabirynthBlocks = (scene, brickConfig, labyrynthModel) => {
-  const blocks =  labyrynthModel.map((item) => buildSingleBlock(scene, brickConfig, item));
-  const finishBrick =  blocks.pop();
-  console.log(finishBrick);
-  return [blocks, finishBrick]
+const makeCopy = (maze, width) => {
+  const newMaze = [...maze].map(item => {
+   const newItem = [[...item[0]], [...item[1]]];
+   newItem[0][1] += width;  
+   newItem[1][1] += width;
+   return newItem;
+  })
+
+  return newMaze;
+}
+
+// reduce borders between mazes
+const borderReducer = .5;
+
+const buildLabirynthBlocks = (scene, brickConfig, labyrynthModel, labyrinthConfig) => {
+  const secondCopy = makeCopy(labyrynthModel, labyrinthConfig.width - borderReducer);
+  const thirdCopy = makeCopy(labyrynthModel, (labyrinthConfig.width - borderReducer ) * 2);
+  const firstFinish = labyrynthModel.pop();
+  const secondFinish = secondCopy.pop();
+  const thirdFinish = thirdCopy.pop();
+  
+  const blocks =  [...labyrynthModel, ...secondCopy, ...thirdCopy].map((item) => buildSingleBlock(scene, brickConfig, item));
+  const finishBlocks = [firstFinish, secondFinish, thirdFinish].map((item) => buildSingleBlock(scene, brickConfig, item));;
+  return [blocks, finishBlocks]
 }
  
 

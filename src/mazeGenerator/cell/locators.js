@@ -6,9 +6,8 @@ export const getRandomCell = (cells) => cells[getRandomNumber(constants.GRID_SIZ
 function getUnvisitedNeighbours(cells, { column, row }) {
   const previousColumn = column > 0 ? cells[column - 1][row] : null;
   const previousRow = row > 0 ? cells[column][row - 1] : null;
-  const nextColumn = column < cells.length - 1 ? cells[column + 1][row] : null;
-  const nextRow = row < cells.length - 1 ? cells[column][row + 1] : null;
-
+  const nextColumn = column < cells.length - 1 ? cells[column + 1][row] : null; 
+  const nextRow = row < cells[0].length - 1 ? cells[column][row + 1] : null;
   return [previousColumn, previousRow, nextColumn, nextRow]
     .filter(Boolean)
     .filter((cell) => !cell.isVisited);

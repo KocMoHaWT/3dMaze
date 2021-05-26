@@ -46,7 +46,6 @@ function generateMase(cols, rows) {
   const gridSize = cols * rows;
   while (visitedCellsCount !== gridSize - 1) {
     const neighbour = getUnvisitedNeighbour(cells, cell);
-
     const increment = neighbour ? 1 : 0;
 
     cell.type = markCell(cell, visitedCellsCount, cols, rows);
@@ -61,8 +60,6 @@ function generateMase(cols, rows) {
     cell = neighbour || stack.pop();
     visitedCellsCount += increment;
   }
-
-  
   return cells;
 }
 
