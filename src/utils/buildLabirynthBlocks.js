@@ -28,14 +28,13 @@ const makeCopy = (maze, width) => {
 const borderReducer = .5;
 
 const buildLabirynthBlocks = (scene, brickConfig, labyrynthModel, labyrinthConfig) => {
-  const secondCopy = makeCopy(labyrynthModel, labyrinthConfig.width - borderReducer);
-  const thirdCopy = makeCopy(labyrynthModel, (labyrinthConfig.width - borderReducer ) * 2);
+  const secondCopy = makeCopy(labyrynthModel, labyrinthConfig.height - borderReducer);
+  const thirdCopy = makeCopy(labyrynthModel, (labyrinthConfig.height - borderReducer ) * 2);
   const firstFinish = labyrynthModel.pop();
   const secondFinish = secondCopy.pop();
   const thirdFinish = thirdCopy.pop();
-  
-  const blocks =  [...labyrynthModel, ...secondCopy, ...thirdCopy].map((item) => buildSingleBlock(scene, brickConfig, item));
-  const finishBlocks = [firstFinish, secondFinish, thirdFinish].map((item) => buildSingleBlock(scene, brickConfig, item));;
+  const blocks =  [...labyrynthModel].map((item) => buildSingleBlock(scene, brickConfig, item));
+  const finishBlocks = [firstFinish].map((item) => buildSingleBlock(scene, brickConfig, item));;
   return [blocks, finishBlocks]
 }
  

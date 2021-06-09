@@ -9,8 +9,8 @@ import { skewMesh } from '../utils/skewMesh';
 import buildLabirynthBlocks from '../utils/buildLabirynthBlocks';
 import createBox from '../utils/createBox';
 import labyrinthModel from '../labyrinth'
-import integratedLabyrinth from "../mazeGenerator/generator/integrateMase";
-import generateMase from "../mazeGenerator/generator";
+import integratedLabyrinth from '../mazeGenerator/generator/integrateMase';
+import generateMase from '../mazeGenerator/generator';
 
 const BRICK_CONFIG = {
   sectionWidth: 1.5,
@@ -21,8 +21,8 @@ const BRICK_CONFIG = {
 }
 
 const labyrinthConfig = {
-  height: 10,
-  width: 5,
+  height: 20,
+  width: 20,
 }
 
 const createContent = (scene) => {
@@ -35,7 +35,6 @@ const createContent = (scene) => {
   const box = createBox(blocks, scene, paddingsVector)
 
   let boxCSG = CSG.FromMesh(box);
-  console.log( [...blocks, ...finishBricks], 'wah');
   [...blocks, ...finishBricks].forEach((obj) => {
     const newMeshCSG = CSG.FromMesh(obj);
     boxCSG = boxCSG.subtract(newMeshCSG);
@@ -49,7 +48,7 @@ const createContent = (scene) => {
   newBox.markVerticesDataAsUpdatable(VertexBuffer.PositionKind, true)
   newBox.locallyTranslate(new Vector3(1, -3.495, -3));
   newBox.rotate(new Vector3(1, 0, 0), Math.PI / 2);
-  // added new rotation in order to turn mesh's exit to top  
+  // added new rotation in order to turn mesh's exit to top
   newBox.rotate(new Vector3(0, 0, 1), Math.PI / 2);
   // skewMesh(newBox)
 };

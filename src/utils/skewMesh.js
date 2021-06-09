@@ -15,16 +15,20 @@ const createVector = ([x, y, z]) => new Vector3(x, y, z);
 function group(list) {
   console.log('hehheh', list);
   let arrayBy3 = [];
+  let tallestY = 0;
   for (let i = 0; i < list.length; i += 3) {
     const first = list[i];
     const second = list[i + 1];
     const third = list[i + 2];
+    if (tallestY < list[i + 1]) {
+      tallestY = list[i + 1];
+    }
     const vector = createVector([first, second, third]);
     arrayBy3 = [...arrayBy3, vector];
   }
-
+  console.log('tallest y', tallestY)
   console.log({ arrayBy3 })
-  return arrayBy3;
+  return [arrayBy3, tallestY];
 }
 
 export const getMeshSize = (mesh) => {
@@ -33,12 +37,14 @@ export const getMeshSize = (mesh) => {
   return maximum.subtract(minimum);
 };
 
-const tubeMeshPoint = R.curry((radius, perimeter, point) => {
+const tubeMeshPoint = R.curry((radius, perimeter, tallestY, point) => {
   const { x, y, z } = point;
   // TODO: compare to pivotPoint.X
   const distanceToPivot = x;
   // TODO: compare to pivotPoint.Y
-  const depth = y
+  // const depth = y
+  // just test the y vect of tallest
+  const depth = y - tallestY;
   const angle = (distanceToPivot / perimeter) * FULL_CIRCLE_RADIANS;
   const xX = Math.cos(angle) * (radius + depth);
   const yY = Math.sin(angle) * (radius + depth);
@@ -58,14 +64,15 @@ export const skewMesh = (mesh) => {
   // Now I need to convert them to Vector a)
   const positions = mesh.getVerticesData(POSITION_KIND)
   // ya, we have vectors now, cool, cool
-  const verticles = group(positions);
+  const [verticles, tallestY] = group(positions);
   // Calculating target radius for a given perimeter
   const size = getMeshSize(mesh);
   const perimeter = size.x;
-  const radius = Math.sqrt(perimeter / Math.PI);
+  const radius = perimeter / (2 * Math.PI);
 
   // magically update position of every verticle, lol  /// like + 1
-  const updatedVerticles = verticles.map(tubeMeshPoint(radius, perimeter))
+  console.log('radius', radius, 'perimeter', perimeter, 'maxy', tallestY)
+  const updatedVerticles = verticles.map(tubeMeshPoint(radius, perimeter, tallestY))
   console.log('updated varticles', updatedVerticles);
   const updatedPositions = hahahahahha(updatedVerticles);
 

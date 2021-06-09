@@ -1,8 +1,8 @@
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
-import { Mesh, StandardMaterial } from '@babylonjs/core';
+import { Mesh } from '@babylonjs/core';
 
 const createBox = (objs, scene, paddings) => {
-  const singleMeshOfObjs = Mesh.MergeMeshes(objs, false);
+  const singleMeshOfObjs = Mesh.MergeMeshes(objs, false, true);
   const boxSize = singleMeshOfObjs.getBoundingInfo().boundingBox;
   const meshSize = boxSize.maximum.subtract(boxSize.minimum);
   const meshOffset = singleMeshOfObjs.getBoundingInfo().boundingBox.center;
